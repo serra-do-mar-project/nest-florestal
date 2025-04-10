@@ -1,14 +1,41 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model Fiscal {
+  CPF    String  @id @unique
+  Nome   String
+  Senha  String
+  Tipo   Int
+  autos  AutoInfracao[] @relation("FiscalToAutoInfracao")
+}
+
+model AutoInfracao {
+  ID              Int          @id @default(autoincrement())
+  Data_Emissao    DateTime
+  CPF             String
+  Lat             Int
+  Lon             Int
+  ID_exemploCaso  Int
+  Descricao       String
+
+  fiscal          Fiscal       @relation("FiscalToAutoInfracao", fields: [CPF], references: [CPF], onDelete: Cascade)
+  exemploCaso     ExemploCaso  @relation("AutoInfracaoToExemploCaso", fields: [ID_exemploCaso], references: [ID], onDelete: Cascade)
+}
+
+model ExemploCaso {
+  ID             Int             @id @default(autoincrement())
+  PalavraChave   String
+  naturezaDano   String
+  proc_OP        String
+  proc_ADM       String
+  enq_PEN        String
+  enq_ADM        String
+  Modelo         String
+  autos           AutoInfracao[]  @relation("AutoInfracaoToExemploCaso")
 }
