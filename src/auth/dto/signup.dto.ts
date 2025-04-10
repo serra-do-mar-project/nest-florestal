@@ -1,8 +1,6 @@
 export class SignupDto {
   name: string;
-  email: string;
+  cpf: string;
   password: string;
-  ddi: number;
-  ddd: number;
-  phone: number;
+  type: number;
 }
