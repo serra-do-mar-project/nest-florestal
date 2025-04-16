@@ -10,6 +10,11 @@ export class AutoInfracaoController {
         return this.autoInfracaoService.getExemploCaso();
     }
 
+    @Get('autosNaoDespachados')
+    getAutosNaoDespachados() {
+        return this.autoInfracaoService.getAutosNaoDespachados();
+    }
+
     // @Post('autoInfracao')
     // createAutoInfracao(@Body() data: any) {
     //     return this.autoInfracaoService.createAutoInfracao(data);

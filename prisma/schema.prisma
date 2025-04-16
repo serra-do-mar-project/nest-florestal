@@ -23,6 +23,7 @@ model AutoInfracao {
   Lon             Int
   ID_exemploCaso  Int
   Descricao       String
+  Despachado      Boolean     @default(false)
 
   fiscal          Fiscal       @relation("FiscalToAutoInfracao", fields: [CPF], references: [CPF], onDelete: Cascade)
   exemploCaso     ExemploCaso  @relation("AutoInfracaoToExemploCaso", fields: [ID_exemploCaso], references: [ID], onDelete: Cascade)
