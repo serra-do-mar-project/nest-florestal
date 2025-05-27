@@ -54,7 +54,7 @@ describe('AuthController', () => {
     it('should call authService.signin with correct dto', async () => {
       const dto: SigninDto = {
         cpf: '12345678901',
-        password: 'penilson',
+        password: 'teste',
       };
 
       const result = { accessToken: 'jwt.token.here' };
