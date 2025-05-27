@@ -9,7 +9,7 @@ async function main() {
   await prisma.fiscal.create({
     data: {
       CPF: '12345678901',
-      Nome: 'penilson',
+      Nome: 'teste',
       Senha: hashedPassword,
       Tipo: 1,
     },
