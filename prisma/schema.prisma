@@ -23,8 +23,6 @@ model Infracao {
   palavra_chave String?  @db.VarChar(255)
   categoria     String   @db.VarChar(100)
   tags          String?  @db.VarChar(255)
-  exemplo       String?  @db.Text
-  definicao     String?  @db.Text
   proc_OP       String?  @db.Text
   proc_ADM      String?  @db.Text
   enquad_PEN    String?  @db.Text
@@ -47,6 +45,7 @@ model Relatorio {
   Observacoes      String?  @db.Text
   Local_Ocorrencia String?  @db.VarChar(255)
   Data_Ocorrencia  DateTime?
+  Texto      String?  @db.Text
 
   Fiscal   Fiscal   @relation(fields: [CPF_Fiscal], references: [CPF], onDelete: Restrict, onUpdate: Cascade)
   Infracao Infracao @relation(fields: [ID_Infracao], references: [id], onDelete: Restrict, onUpdate: Cascade)
