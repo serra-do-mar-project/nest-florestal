@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SigninDto } from './dto/signin.dto';
 import { SignupDto } from './dto/signup.dto';
@@ -58,9 +58,10 @@ export class AuthService {
 
         // Verificar se a senha está correta
         const isPasswordValid = await bcrypt.compare(dto.password, user.Senha);
+        console.log(isPasswordValid)
 
         if (!isPasswordValid) {
-            throw new Error('Credenciais inválidas');
+            throw new UnauthorizedException('Credenciais inválidas');
         }
 
         // Gerar o JWT (token) para o usuário
