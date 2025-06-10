@@ -1,42 +1,54 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
+generator client {
+  provider = "prisma-client-js"
+}
+
 model Fiscal {
-  CPF    String  @id @unique
-  Nome   String
-  Senha  String
-  Tipo   Int
-  autos  AutoInfracao[] @relation("FiscalToAutoInfracao")
+  CPF   String @id @db.VarChar(14)
+  Nome  String @db.VarChar(255)
+  Senha String @db.VarChar(255)
+  Tipo  Int
+
+  Relatorios Relatorio[]
 }
 
-model AutoInfracao {
-  ID              Int          @id @default(autoincrement())
-  Data_Emissao    DateTime
-  CPF             String
-  Lat             Int
-  Lon             Int
-  ID_exemploCaso  Int
-  Descricao       String
-  Despachado      Boolean     @default(false)
+model Infracao {
+  id            Int      @id @default(autoincrement())
+  nome_resumo   String?  @db.VarChar(100)
+  nome_completo String   @db.VarChar(255)
+  palavra_chave String?  @db.VarChar(255)
+  categoria     String   @db.VarChar(100)
+  tags          String?  @db.VarChar(255)
+  proc_OP       String?  @db.Text
+  proc_ADM      String?  @db.Text
+  enquad_PEN    String?  @db.Text
+  enquad_ADM    String?  @db.Text
+  formulario    String?  @db.VarChar(255)
+  tipoOcorrencia String? @db.VarChar(100)
+  campos        String?  @db.Text
 
-  fiscal          Fiscal       @relation("FiscalToAutoInfracao", fields: [CPF], references: [CPF], onDelete: Cascade)
-  exemploCaso     ExemploCaso  @relation("AutoInfracaoToExemploCaso", fields: [ID_exemploCaso], references: [ID], onDelete: Cascade)
+  Relatorios Relatorio[]
+
+  @@index([categoria])
+  @@index([palavra_chave])
 }
 
-model ExemploCaso {
-  ID             Int             @id @default(autoincrement())
-  PalavraChave   String
-  naturezaDano   String
-  proc_OP        String
-  proc_ADM       String
-  enq_PEN        String
-  enq_ADM        String
-  Modelo         String
-  autos           AutoInfracao[]  @relation("AutoInfracaoToExemploCaso")
+model Relatorio {
+  ID               Int      @id @default(autoincrement())
+  Data_Emissao     DateTime @db.Date
+  CPF_Fiscal       String   @db.VarChar(14)
+  ID_Infracao      Int
+  Observacoes      String?  @db.Text
+  Local_Ocorrencia String?  @db.VarChar(255)
+  Data_Ocorrencia  DateTime?
+  Texto      String?  @db.Text
+
+  Fiscal   Fiscal   @relation(fields: [CPF_Fiscal], references: [CPF], onDelete: Restrict, onUpdate: Cascade)
+  Infracao Infracao @relation(fields: [ID_Infracao], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([Data_Emissao])
 }
