@@ -8,13 +8,12 @@ import { Public } from './public.decorator';
 export class AuthController {
     constructor(private authService: AuthService) {}
 
-    @Public() // Indica que a rota de cadastro é pública
     @Post('signup')
     signup(@Body() dto: SignupDto) {
         return this.authService.signup(dto)
     }
 
-    @Public() // Indica que a rota de login é pública
+    @Public()
     @Post('signin')
     signin(@Body() dto: SigninDto) {
         return this.authService.signin(dto)

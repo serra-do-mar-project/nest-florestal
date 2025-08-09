@@ -8,7 +8,7 @@ import { AuthController } from './auth.controller';
 @Module({
   imports: [
     JwtModule.register({
-      secret: 'your-secret-key',
+      secret: 'seu-segredo',
       signOptions: { expiresIn: '1h' },
     }),
   ],
@@ -18,6 +18,7 @@ import { AuthController } from './auth.controller';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
-  ]
+  ],
+  exports: [AuthService]
 })
 export class AuthModule {}

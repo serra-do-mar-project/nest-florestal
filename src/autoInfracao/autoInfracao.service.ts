@@ -1,27 +1,14 @@
-import {Injectable } from '@nestjs/common';
+import { Injectable, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/jwtGuard';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AutoInfracaoService {
     constructor(private prisma: PrismaService) {}
-
-    async getExemploCaso() {
-        return this.prisma.exemploCaso.findMany();
-    }
-
-    async getAutosNaoDespachados() {
-        const autosNaoDespachados = await this.prisma.autoInfracao.findMany({
-        where: {
-            Despachado: false,
-        }});
+    
+    async getInfracoes() {
+        const autosNaoDespachados = await this.prisma.infracao.findMany();
         return autosNaoDespachados;
     }
-
-    // async createAutoInfracao(data: any) {
-    //     return this.prisma.AutoInfracao.create({
-    //         data: {
-    //             ...data,
-    //         },
-    //     });
-    // }
 }
