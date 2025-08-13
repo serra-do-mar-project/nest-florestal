@@ -3,39 +3,38 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model Fiscal {
-  CPF    String  @id @unique
-  Nome   String
-  Senha  String
-  Tipo   Int
-  autos  AutoInfracao[] @relation("FiscalToAutoInfracao")
+model autoinfracao {
+  id             Int         @id @default(autoincrement())
+  data_emissao   DateTime    @db.Timestamp(6)
+  cpf            String      @db.VarChar(191)
+  lat            Int
+  lon            Int
+  id_exemplocaso Int
+  descricao      String      @db.VarChar(191)
+  fiscal         fiscal      @relation(fields: [cpf], references: [cpf], onDelete: Cascade)
+  exemplocaso    exemplocaso @relation(fields: [id_exemplocaso], references: [id], onDelete: Cascade)
 }
 
-model AutoInfracao {
-  ID              Int          @id @default(autoincrement())
-  Data_Emissao    DateTime
-  CPF             String
-  Lat             Int
-  Lon             Int
-  ID_exemploCaso  Int
-  Descricao       String
-
-  fiscal          Fiscal       @relation("FiscalToAutoInfracao", fields: [CPF], references: [CPF], onDelete: Cascade)
-  exemploCaso     ExemploCaso  @relation("AutoInfracaoToExemploCaso", fields: [ID_exemploCaso], references: [ID], onDelete: Cascade)
+model exemplocaso {
+  id           Int            @id @default(autoincrement())
+  palavrachave String         @db.VarChar(191)
+  naturezadano String         @db.VarChar(191)
+  proc_op      String         @db.VarChar(191)
+  proc_adm     String         @db.VarChar(191)
+  enq_pen      String         @db.VarChar(191)
+  enq_adm      String         @db.VarChar(191)
+  modelo       String         @db.VarChar(191)
+  autoinfracao autoinfracao[]
 }
 
-model ExemploCaso {
-  ID             Int             @id @default(autoincrement())
-  PalavraChave   String
-  naturezaDano   String
-  proc_OP        String
-  proc_ADM       String
-  enq_PEN        String
-  enq_ADM        String
-  Modelo         String
-  autos           AutoInfracao[]  @relation("AutoInfracaoToExemploCaso")
+model fiscal {
+  cpf          String         @id @db.VarChar(191)
+  nome         String         @db.VarChar(191)
+  senha        String         @db.VarChar(191)
+  tipo         Int
+  autoinfracao autoinfracao[]
 }
