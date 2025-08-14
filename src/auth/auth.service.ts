@@ -16,7 +16,7 @@ export class AuthService {
     async signup(dto: SignupDto) {
         // Verificar se o usuário já existe
         const userExists = await this.prisma.fiscal.findUnique({
-            where: { CPF: dto.cpf },
+            where: { cpf: dto.cpf },
         });
 
         if (userExists) {
@@ -29,15 +29,15 @@ export class AuthService {
         // Criar o novo usuário
         const user = await this.prisma.fiscal.create({
             data: {
-                CPF: dto.cpf,
-                Nome: dto.name,
-                Senha: hashedPassword,
-                Tipo: dto.type,
+                cpf: dto.cpf,
+                nome: dto.name,
+                senha: hashedPassword,
+                tipo: dto.type,
             },
         });
 
         // Gerar o JWT (token) para o usuário
-        const token = this.jwtService.sign({ cpf: user.CPF });
+        const token = this.jwtService.sign({ cpf: user.cpf });
 
         return {
             message: 'Usuário registrado com sucesso!',
@@ -49,7 +49,7 @@ export class AuthService {
     async signin(dto: SigninDto) {
         // Verificar se o usuário existe
         const user = await this.prisma.fiscal.findUnique({
-            where: { CPF: dto.cpf },
+            where: { cpf: dto.cpf },
         });
 
         if (!user) {
@@ -57,7 +57,7 @@ export class AuthService {
         }
 
         // Verificar se a senha está correta
-        const isPasswordValid = await bcrypt.compare(dto.password, user.Senha);
+        const isPasswordValid = await bcrypt.compare(dto.password, user.senha);
         console.log(isPasswordValid)
 
         if (!isPasswordValid) {
@@ -65,7 +65,7 @@ export class AuthService {
         }
 
         // Gerar o JWT (token) para o usuário
-        const token = this.jwtService.sign({ cpf: user.CPF });
+        const token = this.jwtService.sign({ cpf: user.cpf });
 
         return {
             message: 'Login bem-sucedido!',

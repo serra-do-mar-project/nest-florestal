@@ -6,7 +6,7 @@ export class AutoInfracaoService {
     constructor(private prisma: PrismaService) {}
 
     async getExemploCaso() {
-        return this.prisma.exemploCaso.findMany();
+        return this.prisma.exemplocaso.findMany();
     }
 
     // async createAutoInfracao(data: any) {

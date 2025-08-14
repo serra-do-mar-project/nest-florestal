@@ -1,4 +1,5 @@
-import { IsNotEmpty } from "class-validator";
+import { tipo_usuario } from "@prisma/client";
+import { isEnum, IsIn,  IsNotEmpty } from "class-validator";
 
 
 export class SignupDto {
@@ -11,6 +12,7 @@ export class SignupDto {
   @IsNotEmpty()
   password: string;
 
+  @IsIn(Object.values(tipo_usuario))
   @IsNotEmpty()
-  type: number;
+  type: tipo_usuario;
 }

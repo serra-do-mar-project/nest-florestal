@@ -1,1 +1,4 @@
+//para evitar mudanças inviseis quanto a quebra de linhas:
+
 *.prisma text eol=lf
+

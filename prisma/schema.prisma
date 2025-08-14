@@ -35,6 +35,11 @@ model fiscal {
   cpf          String         @id @db.VarChar(191)
   nome         String         @db.VarChar(191)
   senha        String         @db.VarChar(191)
-  tipo         Int
+  tipo         tipo_usuario
   autoinfracao autoinfracao[]
+}
+
+enum tipo_usuario {
+  fiscal
+  administrador
 }
