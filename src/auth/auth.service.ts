@@ -69,7 +69,7 @@ export class AuthService {
 
         return {
             message: 'Login bem-sucedido!',
-            token,
+            access_token: token,
         };
     }
 }

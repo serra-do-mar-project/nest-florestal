@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AutoInfracaoService } from './autoInfracao.service';
 
 @Controller('autoInfracao')
@@ -7,11 +7,6 @@ export class AutoInfracaoController {
 
     @Get('exemploCaso')
     getExemploCaso() {
-        return this.autoInfracaoService.getExemploCaso();
+        return this.autoInfracaoService.getInfracoes();
     }
-
-    // @Post('autoInfracao')
-    // createAutoInfracao(@Body() data: any) {
-    //     return this.autoInfracaoService.createAutoInfracao(data);
-    // }
 }
