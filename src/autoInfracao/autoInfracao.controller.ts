@@ -7,6 +7,6 @@ export class AutoInfracaoController {
 
     @Get('exemploCaso')
     getExemploCaso() {
-        return this.autoInfracaoService.getInfracoes();
+        return this.autoInfracaoService.getExemploCaso();
     }
 }
