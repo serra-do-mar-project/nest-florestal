@@ -1,21 +1,23 @@
 import {
+  Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Post,
+  Put,
   Request,
   UseGuards,
+
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthRequest } from './models/authRequest';
 import { IsPublic } from './decorators/is-public.decorator';
-import { IsAdmin } from './decorators/is-admin.decorator';
-import { AdminGuard } from './guards/admin.guard';
-import { copyFile } from 'fs';
-import { DeleteRequest } from './models/deleteRequest';
+import { copyFile, cp } from 'fs';
+import { updatePassword } from './models/updatePassword';
+
+
 
 @Controller()
 export class AuthController {
@@ -34,6 +36,13 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   profile(@Request() req: AuthRequest) {
     return req.user;
+  }
+
+  @IsPublic()
+  @Put('reset')
+  async resetPassword(@Body() req: updatePassword) {
+    // Exemplo simplificado:
+    return this.authService.updatePassword(req.cpf, req.senhaAntiga, req.senhaNova);
   }
 
 }

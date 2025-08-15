@@ -1,15 +1,18 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/user/entities/user.entity';
 import { UserPayload } from './models/userPayload';
 import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   
-  constructor(private userService: UserService, private readonly jwtService: JwtService) { }
+  constructor(private userService: UserService, private readonly jwtService: JwtService, protected prisma: PrismaService) { }
   
+
+  //realizar login gerando token de acesso
   login(user: User) {
     const payload: UserPayload = {
       cpf: user.cpf,
@@ -22,7 +25,8 @@ export class AuthService {
     };
     
   }
-  
+
+  //verificar perfil
   profile(user: User) {
     const payload: UserPayload = {
       cpf: user.cpf,
@@ -32,7 +36,32 @@ export class AuthService {
     
     return this.jwtService.sign(payload);
   }
-  
+
+
+  //atualizar senha
+   async updatePassword(cpf: string, currentPassword: string, newPassword: string) {
+    const user = await this.userService.findByCpf(cpf);
+
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+
+    const passwordMatches = await bcrypt.compare(currentPassword, user.senha);
+
+    if (!passwordMatches) {
+      throw new BadRequestException('Senha atual incorreta');
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    await this.prisma.fiscal.update({
+      where: { cpf: user.cpf },
+      data: { senha: hashedNewPassword },
+    });
+
+    return { message: 'Senha atualizada com sucesso' };
+  }
+
+
+  //
   async validateUser(cpf: string, senha: string) {
 
     const user = await this.userService.findByCpf(cpf)

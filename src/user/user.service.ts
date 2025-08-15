@@ -50,14 +50,18 @@ export class UserService {
   }
 
 
-    deleteUserByCpf(cpf: string) {
+    async deleteUserByCpf(cpf: string) {
     //verificar se cpf exite:
-    const user = this.findByCpf(cpf);
+    const user = await this.findByCpf(cpf);
+
+
     if (!user) {
-      throw new Error('Usuário não encontrado');
+      return { message: 'Usuário nao encontrado' };
     }
     //se chegou aqui, significa que o cpf existe
-    return this.prisma.fiscal.delete({ where: { cpf } } )
+    await this.prisma.fiscal.delete({ where: { cpf } } )
+
+    return { message: 'Usuário excluido com sucesso' };
   };
 
   findByCpf(cpf: string) {

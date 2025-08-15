@@ -23,10 +23,10 @@ export class UserController {
     return this.userService.login(dto);
   }
 
-  @Delete(':id')
+  @Delete('delete')
   @UseGuards(AdminGuard)  // garante que o AdminGuard roda nessa rota
   @IsAdmin()              // marca essa rota como apenas para admins
-  async deleteUser(@Request() req: DeleteRequest) {
+  async deleteUser(@Body() req: DeleteRequest) {
     // Aqui você chama o service que faz a exclusão do usuário no banco
     // Exemplo simplificado:
     return await this.userService.deleteUserByCpf(req.cpf);
