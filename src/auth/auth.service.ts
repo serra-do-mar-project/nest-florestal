@@ -7,43 +7,52 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
+  
+  constructor(private userService: UserService, private readonly jwtService: JwtService) { }
+  
+  login(user: User) {
+    const payload: UserPayload = {
+      cpf: user.cpf,
+      nome: user.name,
+      tipo: user.tipo
+    };
     
-    constructor(private userService: UserService, private readonly jwtService: JwtService) { }
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+    
+  }
+  
+  profile(user: User) {
+    const payload: UserPayload = {
+      cpf: user.cpf,
+      nome: user.name,
+      tipo: user.tipo
+    };
+    
+    return this.jwtService.sign(payload);
+  }
+  
+  async validateUser(cpf: string, senha: string) {
 
-    login(user: User) {
-      const payload: UserPayload = {
-        cpf: user.cpf,
-        nome: user.name,
-        tipo: user.tipo
-      };
+    const user = await this.userService.findByCpf(cpf)
+    console.log('Usuário encontrado:', user);
 
-      return {
-        access_token: this.jwtService.sign(payload),
-      };
 
+
+
+    if (user) {
+      //checar se a senha corresponde a hash que está no banco
+      const isPasswordValid = await bcrypt.compare(senha, user.senha);
+
+      if (isPasswordValid) {
+        return {
+          ...user,
+          senha: undefined
+        };
+      }
     }
-
-
-    async validateUser(cpf: string, senha: string) {
-        
-        const user = await this.userService.findByCpf(cpf)
-        console.log('Usuário encontrado:', user);
-
-
-
-
-        if (user) {
-            //checar se a senha corresponde a hash que está no banco
-            const isPasswordValid = await bcrypt.compare(senha, user.senha);
-
-            if (isPasswordValid) {
-                return {
-                    ...user,
-                    senha: undefined
-                };
-            }
-        }
-        //se chegar aqui, significa que o cpf ou senha estao errados
-        throw new UnauthorizedException('CPF ou senha incorretos');
-    }
+    //se chegar aqui, significa que o cpf ou senha estao errados
+    throw new UnauthorizedException('CPF ou senha incorretos');
+  }
 }

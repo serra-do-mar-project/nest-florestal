@@ -10,14 +10,14 @@ import { AppService } from './app.service';
 
 @Module({
   imports: [PrismaModule, UserModule, JwtModule.register({
-    secret: 'seu-segredo',
+    secret: process.env.JWT_SECRET,
     signOptions: { expiresIn: '1h' },
   }), UserModule, UserModule, AuthModule, AppModule],
   controllers: [AppController],
   providers: [ AppService,
     {
     provide: APP_GUARD,
-    useClass: JwtAuthGuard
+    useClass: JwtAuthGuard,
   }
 
   ],

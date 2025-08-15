@@ -49,6 +49,17 @@ export class UserService {
     };
   }
 
+
+    deleteUserByCpf(cpf: string) {
+    //verificar se cpf exite:
+    const user = this.findByCpf(cpf);
+    if (!user) {
+      throw new Error('Usuário não encontrado');
+    }
+    //se chegou aqui, significa que o cpf existe
+    return this.prisma.fiscal.delete({ where: { cpf } } )
+  };
+
   findByCpf(cpf: string) {
     return this.prisma.fiscal.findUnique({ where: { cpf }, select: { cpf: true, nome: true, senha: true, tipo: true } });
   }
