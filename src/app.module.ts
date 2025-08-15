@@ -1,22 +1,19 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { JwtModule } from '@nestjs/jwt';
-import { JwtAuthGuard } from './auth/jwtGuard';
-import { APP_GUARD } from '@nestjs/core';
 import { AutoInfracaoModule } from './autoInfracao/autoInfracao.module';
+import { AuthGuard } from './auth/auth.guard';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtStrategy } from './auth/jwt.strategy';
 
 @Module({
-  imports: [AuthModule, PrismaModule, AutoInfracaoModule, JwtModule.register({
-    secret: 'seu-segredo',
-    signOptions: { expiresIn: '1h' },
-  })],
+  imports: [AuthModule, PrismaModule, AutoInfracaoModule],
   controllers: [],
   providers: [
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
+      useClass: AuthGuard,
+    }
   ],
 })
 export class AppModule {}
