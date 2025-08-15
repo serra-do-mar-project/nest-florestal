@@ -3,12 +3,13 @@ import { PrismaModule } from './prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [PrismaModule, JwtModule.register({
     secret: 'seu-segredo',
     signOptions: { expiresIn: '1h' },
-  }), UserModule, UserModule],
+  }), UserModule, UserModule, AuthModule],
   controllers: [],
   providers: [
    

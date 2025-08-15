@@ -49,4 +49,7 @@ export class UserService {
     };
   }
 
+  findByCpf(cpf: string) {
+    return this.prisma.fiscal.findUnique({ where: { cpf }, select: { cpf: true, nome: true, senha: true, tipo: true } });
+  }
 }
