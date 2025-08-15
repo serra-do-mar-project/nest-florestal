@@ -13,7 +13,8 @@ export class AuthService {
     login(user: User) {
       const payload: UserPayload = {
         cpf: user.cpf,
-        name: user.name,
+        nome: user.name,
+        tipo: user.tipo
       };
 
       return {

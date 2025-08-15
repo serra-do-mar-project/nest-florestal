@@ -1,6 +1,7 @@
 export interface UserPayload {
     cpf: string;
-    name: string;
+    nome: string;
+    tipo: string;
     iat?: number;
     exp?: number;
 }

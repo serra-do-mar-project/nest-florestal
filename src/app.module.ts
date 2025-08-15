@@ -4,15 +4,22 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
-  imports: [PrismaModule, JwtModule.register({
+  imports: [PrismaModule, UserModule, JwtModule.register({
     secret: 'seu-segredo',
     signOptions: { expiresIn: '1h' },
-  }), UserModule, UserModule, AuthModule],
-  controllers: [],
-  providers: [
-   
+  }), UserModule, UserModule, AuthModule, AppModule],
+  controllers: [AppController],
+  providers: [ AppService,
+    {
+    provide: APP_GUARD,
+    useClass: JwtAuthGuard
+  }
+
   ],
 })
-export class AppModule {}
+export class AppModule { }
