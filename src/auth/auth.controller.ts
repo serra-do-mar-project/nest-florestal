@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { AuthRequest } from './models/authRequest';
 
 @Controller()
 export class AuthController {
@@ -16,7 +17,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)  //usa a estratégia local
-     login(@Request() req) {
-        return req.user;
+     login(@Request() req: AuthRequest) {
+        return this.authService.login(req.user);
   }
 }
