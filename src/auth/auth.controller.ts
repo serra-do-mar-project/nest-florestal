@@ -45,4 +45,6 @@ export class AuthController {
     return this.authService.updatePassword(req.cpf, req.senhaAntiga, req.senhaNova);
   }
 
+
+
 }
