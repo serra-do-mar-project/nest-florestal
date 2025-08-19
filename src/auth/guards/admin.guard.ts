@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { IS_ADMIN_KEY } from '../decorators/is-admin.decorator';
 import { Reflector } from '@nestjs/core';
+import { IsSelf } from '../decorators/is-self.decorator';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
@@ -23,8 +24,11 @@ export class AdminGuard implements CanActivate {
       return true;
     }
 
+    
+
     const request = context.switchToHttp().getRequest();
     const user = request.user;
+
 
     if (user?.tipo !== 'administrador') {
       throw new ForbiddenException('Acesso permitido apenas para administradores.');

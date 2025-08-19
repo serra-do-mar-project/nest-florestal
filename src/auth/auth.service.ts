@@ -1,11 +1,14 @@
 import { BadRequestException, Body, CanActivate, Header, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/user/entities/user.entity';
 import { UserPayload } from './models/userPayload';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
+
+
+
 
 
 @Injectable()
@@ -40,8 +43,8 @@ export class AuthService {
   }
 
 
-  //atualizar senha
-   async updatePassword(cpf: string, currentPassword: string, newPassword: string) {
+  //atualizar senha. Rota para usuário logado
+   async updatePassword(cpf: string, currentPassword: string, newPassword: string, newPasswordConfirm: string) {
     const user = await this.userService.findByCpf(cpf);
 
     if (!user) throw new NotFoundException('Usuário não encontrado');
@@ -50,6 +53,10 @@ export class AuthService {
 
     if (!passwordMatches) {
       throw new BadRequestException('Senha atual incorreta');
+    }
+
+    if (newPassword !== newPasswordConfirm) {
+      throw new BadRequestException('Senhas nao conferem');
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
@@ -62,20 +69,19 @@ export class AuthService {
     return { message: 'Senha atualizada com sucesso' };
   }
 
-  //atualizar própria senha
-  async updateOwnPassword(cpf: string, oldPassword: string, newPassword: string) {
+
+  //Reset de senha. Rota pública e comum a todos os usuários
+  async updateOwnPassword(password: string, passwordConfirm: string, cpf: string) {
 
     const user = await this.userService.findByCpf(cpf);
 
-    if (!user) throw new NotFoundException('Usuário não encontrado');
+    if (!user) throw new NotFoundException('Usuário nao encontrado');
 
-    const passwordMatches = await bcrypt.compare(oldPassword, user.senha);
-
-    if (!passwordMatches) {
-      throw new BadRequestException('Senha atual incorreta');
+    if (password !== passwordConfirm) {
+      throw new BadRequestException('Senhas nao conferem');
     }
 
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    const hashedNewPassword = await bcrypt.hash(password, 10);
 
     await this.prisma.fiscal.update({
       where: { cpf: user.cpf },
@@ -83,6 +89,7 @@ export class AuthService {
     });
 
     return { message: 'Senha atualizada com sucesso' };
+
   }
 
 

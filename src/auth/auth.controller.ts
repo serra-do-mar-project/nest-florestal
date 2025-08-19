@@ -16,6 +16,8 @@ import { AuthRequest } from './models/authRequest';
 import { IsPublic } from './decorators/is-public.decorator';
 import { copyFile, cp } from 'fs';
 import { updatePassword } from './models/updatePassword';
+import { IsSelf } from './decorators/is-self.decorator';
+import { IsAdmin } from './decorators/is-admin.decorator';
 
 
 
@@ -38,11 +40,20 @@ export class AuthController {
     return req.user;
   }
 
-  @IsPublic()
-  @Put('reset')
+  @IsSelf()
+  @Put('updatePassword')
   async resetPassword(@Body() req: updatePassword) {
     // Exemplo simplificado:
-    return this.authService.updatePassword(req.cpf, req.senhaAntiga, req.senhaNova);
+    return this.authService.updatePassword(req.cpf, req.senhaAntiga, req.novaSenha, req.confirmaSenha);
+  }
+
+  //fazer rota de reset restrita aos admins
+
+  @IsPublic()
+  @Put('reset')
+  async updatePassword(@Body() req: updatePassword) {
+    // Exemplo simplificado:
+    return this.authService.updateOwnPassword(req.novaSenha, req.confirmaSenha, req.cpf);
   }
 
 
