@@ -6,6 +6,7 @@ import { User } from 'src/user/entities/user.entity';
 import { UserPayload } from './models/userPayload';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { extractCpfFromToken } from './middleware/verify-cpf';
 
 
 
@@ -92,6 +93,21 @@ export class AuthService {
 
   }
 
+  async updateAnyPassword (password: string, cpf:string, newPassword: string) {
+    const user = this.userService.findByCpf(cpf)
+
+    if(!user) {
+      throw new NotFoundException('usuário não encontrado')
+    }
+
+    const userAdm = this.userService.findByCpf(extractCpfFromToken['cpf'])
+
+    if(!userAdm) {
+      throw new NotFoundException('senha incorreta')
+    }
+
+    
+  }
 
   //
   async validateUser(cpf: string, senha: string) {
