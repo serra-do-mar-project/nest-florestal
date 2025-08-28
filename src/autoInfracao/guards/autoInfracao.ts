@@ -1,5 +1,3 @@
-/*
-
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 
 @Injectable()
@@ -27,5 +25,3 @@ export class AutoInfracaoGuard implements CanActivate {
     throw new UnauthorizedException('Invalid token');
   }
 }
-
-*/

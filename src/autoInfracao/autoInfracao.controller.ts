@@ -1,5 +1,3 @@
-
-/*
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AutoInfracaoService } from './autoInfracao.service';
 
@@ -9,7 +7,6 @@ export class AutoInfracaoController {
 
     @Get('exemploCaso')
     getExemploCaso() {
-        return this.autoInfracaoService.getExemploCaso();
+        return this.autoInfracaoService.getInfracoes();
     }
 }
-*/

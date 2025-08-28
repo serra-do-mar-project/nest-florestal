@@ -1,5 +1,3 @@
-/*
-
 import { Module } from '@nestjs/common';
 import { AutoInfracaoController } from './autoInfracao.controller';
 import { AutoInfracaoService } from './autoInfracao.service';
@@ -10,5 +8,3 @@ import { AutoInfracaoService } from './autoInfracao.service';
   providers: [AutoInfracaoService],
 })
 export class AutoInfracaoModule {}
-
-*/

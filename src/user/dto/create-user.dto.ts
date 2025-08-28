@@ -1,8 +1,7 @@
-import {  IsEnum, IsString, Length, Matches, } from "class-validator";
-import { TipoUsuarioEnum, User } from "../entities/user.entity";
-import { tipo_usuario } from "@prisma/client";
+import {  IsIn, IsString, Length, Matches, } from "class-validator";
 
 export class CreateUserDto {
+
 @Matches(/^\d+$/, { message: 'CPF deve conter apenas números'})
 @Length(11, 11, { message: 'CPF deve conter 11 números'})
 cpf: string;
@@ -13,7 +12,6 @@ nome: string;
 @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, { message: 'Senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial'})
 senha: string;
 
-@IsEnum(TipoUsuarioEnum, {message: 'seu tipo deve ser FISCAL ou ADMINISTRADOR'})
-tipo: TipoUsuarioEnum;
-
+@IsIn([0,1], { message: 'Tipo deve ser 0-fiscal ou 1-administrador'}) 
+tipo: number;
 }

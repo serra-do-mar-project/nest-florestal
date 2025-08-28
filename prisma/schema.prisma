@@ -3,43 +3,51 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-model autoinfracao {
-  id             Int         @id @default(autoincrement())
-  data_emissao   DateTime    @db.Timestamp(6)
-  cpf            String      @db.VarChar(191)
-  lat            Int
-  lon            Int
-  id_exemplocaso Int
-  descricao      String      @db.VarChar(191)
-  fiscal         fiscal      @relation(fields: [cpf], references: [cpf], onDelete: Cascade)
-  exemplocaso    exemplocaso @relation(fields: [id_exemplocaso], references: [id], onDelete: Cascade)
-}
-
-model exemplocaso {
-  id           Int            @id @default(autoincrement())
-  palavrachave String         @db.VarChar(191)
-  naturezadano String         @db.VarChar(191)
-  proc_op      String         @db.VarChar(191)
-  proc_adm     String         @db.VarChar(191)
-  enq_pen      String         @db.VarChar(191)
-  enq_adm      String         @db.VarChar(191)
-  modelo       String         @db.VarChar(191)
-  autoinfracao autoinfracao[]
-}
-
 model fiscal {
-  cpf          String         @id @db.VarChar(191)
-  nome         String         @db.VarChar(191)
-  senha        String         @db.VarChar(191)
-  tipo         tipo_usuario
-  autoinfracao autoinfracao[]
+  CPF       String      @id @db.VarChar(14)
+  Nome      String      @db.VarChar(255)
+  Senha     String      @db.VarChar(255)
+  Tipo      Int
+  relatorio relatorio[]
 }
 
-enum tipo_usuario {
-  fiscal
-  administrador
+model infracao {
+  id             Int         @id @default(autoincrement())
+  nome_resumo    String?     @db.VarChar(100)
+  nome_completo  String      @db.VarChar(255)
+  palavra_chave  String?     @db.VarChar(255)
+  categoria      String      @db.VarChar(100)
+  tags           String?     @db.VarChar(255)
+  proc_OP        String?     @db.Text
+  proc_ADM       String?     @db.Text
+  enquad_PEN     String?     @db.Text
+  enquad_ADM     String?     @db.Text
+  formulario     String?     @db.VarChar(255)
+  tipoOcorrencia String?     @db.VarChar(100)
+  campos         String?     @db.Text
+  relatorio      relatorio[]
+
+  @@index([categoria], map: "Infracao_categoria_idx")
+  @@index([palavra_chave], map: "Infracao_palavra_chave_idx")
+}
+
+model relatorio {
+  ID               Int       @id @default(autoincrement())
+  Data_Emissao     DateTime  @db.Date
+  CPF_Fiscal       String    @db.VarChar(14)
+  ID_Infracao      Int
+  Observacoes      String?   @db.Text
+  Local_Ocorrencia String?   @db.VarChar(255)
+  Data_Ocorrencia  DateTime?
+  Texto            String?   @db.Text
+  fiscal           fiscal    @relation(fields: [CPF_Fiscal], references: [CPF], map: "Relatorio_CPF_Fiscal_fkey")
+  infracao         infracao  @relation(fields: [ID_Infracao], references: [id], map: "Relatorio_ID_Infracao_fkey")
+
+  @@index([CPF_Fiscal], map: "Relatorio_CPF_Fiscal_fkey")
+  @@index([Data_Emissao], map: "Relatorio_Data_Emissao_idx")
+  @@index([ID_Infracao], map: "Relatorio_ID_Infracao_fkey")
 }
