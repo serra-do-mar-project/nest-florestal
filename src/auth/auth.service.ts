@@ -7,6 +7,7 @@ import { UserPayload } from './models/userPayload';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { extractCpfFromToken } from './middleware/verify-cpf';
+import { LoginUserDto } from 'src/user/dto/login-user.dto';
 
 
 
@@ -72,7 +73,7 @@ export class AuthService {
 
 
   //realizar login gerando token de acesso
-  async login(user: User) {
+  async login(user: LoginUserDto) {
 
       //verificar se cpf exite:
       const verifyUser = await this.prisma.fiscal.findUnique({
@@ -96,8 +97,8 @@ export class AuthService {
       //payload para o token
       const payload: UserPayload = {
         cpf: user.cpf,
-        nome: user.nome,
-        tipo: roleMap[user.tipo]
+        nome: verifyUser.Nome,
+        tipo: roleMap[verifyUser.Tipo]
       };
 
       //gerar token

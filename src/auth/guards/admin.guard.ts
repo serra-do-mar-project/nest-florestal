@@ -12,9 +12,9 @@ import { IsSelf } from '../decorators/is-self.decorator';
 export class AdminGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
-  canActivate(context: ExecutionContext): Promise<boolean> | boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     // Verifica se o metadata @IsAdmin está presente
-    const isAdminRequired = this.reflector.getAllAndOverride<boolean>(
+   const isAdminRequired = this.reflector.getAllAndOverride<boolean>(
       IS_ADMIN_KEY,
       [context.getHandler(), context.getClass()],
     );

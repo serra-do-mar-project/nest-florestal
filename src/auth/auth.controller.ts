@@ -19,6 +19,9 @@ import { updatePassword } from './models/updatePassword';
 import { IsSelf } from './decorators/is-self.decorator';
 import { IsAdmin } from './decorators/is-admin.decorator';
 import { DeleteRequest } from './models/deleteRequest';
+import { AdminGuard } from './guards/admin.guard';
+import { LoginUserDto } from 'src/user/dto/login-user.dto';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
 
 
@@ -26,20 +29,20 @@ import { DeleteRequest } from './models/deleteRequest';
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
-
-
+  @UseGuards(AdminGuard)
   @Post('signup')
-  @IsPublic()
-  signup(@Body() user: any) {
+  @IsAdmin()
+  signup(@Body() user: CreateUserDto) {
     return this.authService.signup(user);
   }
 
 
-  @IsPublic()
+  
   @Post('signin')
+  @IsPublic()
   @HttpCode(HttpStatus.OK)
-  login(@Request() req: AuthRequest) {
-    return this.authService.login(req.user);
+  login(@Body() loginDto: LoginUserDto) {
+    return this.authService.login(loginDto);
   }
 
   @Get('profile')
@@ -56,15 +59,26 @@ export class AuthController {
   }
 
   //fazer rota de reset restrita aos admins
-
-  @IsPublic()
+  @UseGuards(AdminGuard)
   @Put('reset')
+  @IsAdmin()
   async updatePassword(@Body() req: updatePassword) {
     // Exemplo simplificado:
     return this.authService.updateOwnPassword(req.novaSenha, req.confirmaSenha, req.cpf);
   }
 
+  //rota para reset de qualquer usário. Restrita a Admins
+  @UseGuards(AdminGuard)
+  @Put('resetAny')
+  @IsAdmin()
+  async updateAnyPassword(@Body() req: updatePassword) {
+    // Exemplo simplificado:
+    return this.authService.updateAnyPassword(req.senhaAdm, req.cpf, req.novaSenha);
+  }
+  
 
+
+  @UseGuards()
   @IsAdmin()              // marca essa rota como apenas para admins
   @Delete('delete')
   async deleteUser(@Body() req: DeleteRequest) {
