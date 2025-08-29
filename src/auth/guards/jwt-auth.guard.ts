@@ -18,7 +18,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   //se a requisição pode continuar ou nao
-  canActivate(context: ExecutionContext): Promise<boolean> | boolean {
+ async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),

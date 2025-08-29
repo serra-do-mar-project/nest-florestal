@@ -27,8 +27,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
 
-  @IsAdmin()
+
   @Post('signup')
+  @IsPublic()
   signup(@Body() user: any) {
     return this.authService.signup(user);
   }
