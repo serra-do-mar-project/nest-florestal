@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { SignupDto } from './dto/signup.dto';
-import { SigninDto } from './dto/signin.dto';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { LoginUserDto } from 'src/user/dto/login-user.dto';
+import { updatePassword } from './models/updatePassword';
+import { DeleteRequest } from './models/deleteRequest';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -34,11 +36,11 @@ describe('AuthController', () => {
 
   describe('signup', () => {
     it('should call authService.signup with correct dto', async () => {
-      const dto: SignupDto = {
-        name: 'John Doe',
+      const dto: CreateUserDto = {
+        nome: 'John Doe',
         cpf: '90760947058',
-        password: 'securePass123',
-        type: 1,
+        senha: 'securePass123',
+        tipo: 1,
       };
 
       const result = { message: 'User created' };
@@ -52,15 +54,16 @@ describe('AuthController', () => {
 
   describe('signin', () => {
     it('should call authService.signin with correct dto', async () => {
-      const dto: SigninDto = {
+      const dto: LoginUserDto = {
         cpf: '12345678901',
-        password: 'teste',
+        senha: 'teste',
       };
 
       const result = { accessToken: 'jwt.token.here' };
       mockAuthService.signin.mockResolvedValue(result);
 
-      const response = await authController.signin(dto);
+      const req = { body: dto };
+      const response = await authController.login(req as any);
       expect(mockAuthService.signin).toHaveBeenCalledWith(dto);
       expect(response).toEqual(result);
     });

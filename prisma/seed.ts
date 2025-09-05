@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   const hashedPassword = await bcrypt.hash("5enha#", 10);
+  
   // Exemplo de inserção de dados
   await prisma.fiscal.create({
     data: {
