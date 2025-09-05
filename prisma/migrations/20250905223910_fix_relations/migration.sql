@@ -7,6 +7,7 @@ CREATE TABLE `autoinfracao` (
     `lon` INTEGER NOT NULL,
     `id_exemplocaso` INTEGER NOT NULL,
     `descricao` VARCHAR(191) NOT NULL,
+    `relatoriodiarioId` INTEGER NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -27,16 +28,18 @@ CREATE TABLE `exemplocaso` (
 
 -- CreateTable
 CREATE TABLE `fiscal` (
+    `id` INTEGER NOT NULL,
     `cpf` VARCHAR(191) NOT NULL,
     `nome` VARCHAR(191) NOT NULL,
     `senha` VARCHAR(191) NOT NULL,
     `tipo` ENUM('fiscal', 'administrador') NOT NULL,
 
-    PRIMARY KEY (`cpf`)
+    UNIQUE INDEX `fiscal_cpf_key`(`cpf`),
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `relatorio_diario` (
+CREATE TABLE `relatoriodiario` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `equipe` ENUM('charlie_sede_diurno', 'charlie_rp_diurno', 'charlie_rp_noturno', 'delta_sede_diurno', 'delta_rp_diurno', 'delta_rp_noturno') NOT NULL,
     `equipe_em_atuacao` VARCHAR(191) NOT NULL,
@@ -63,6 +66,7 @@ CREATE TABLE `relatorio_diario` (
     `descricao_veiculos` VARCHAR(191) NULL,
     `km_percorrido` INTEGER NOT NULL,
     `horas` INTEGER NOT NULL,
+    `fiscalId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -72,3 +76,9 @@ ALTER TABLE `autoinfracao` ADD CONSTRAINT `autoinfracao_cpf_fkey` FOREIGN KEY (`
 
 -- AddForeignKey
 ALTER TABLE `autoinfracao` ADD CONSTRAINT `autoinfracao_id_exemplocaso_fkey` FOREIGN KEY (`id_exemplocaso`) REFERENCES `exemplocaso`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `autoinfracao` ADD CONSTRAINT `autoinfracao_relatoriodiarioId_fkey` FOREIGN KEY (`relatoriodiarioId`) REFERENCES `relatoriodiario`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `relatoriodiario` ADD CONSTRAINT `relatoriodiario_fiscalId_fkey` FOREIGN KEY (`fiscalId`) REFERENCES `fiscal`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
