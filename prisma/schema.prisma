@@ -52,23 +52,6 @@ model fiscal {
   relatoriodiario relatoriodiario[]
 }
 
-model relatorio {
-  ID               Int       @id @default(autoincrement())
-  Data_Emissao     DateTime  @db.Date
-  CPF_Fiscal       String    @db.VarChar(14)
-  ID_Infracao      Int
-  Observacoes      String?   @db.Text
-  Local_Ocorrencia String?   @db.VarChar(255)
-  Data_Ocorrencia  DateTime?
-  Texto            String?   @db.Text
-  fiscal           fiscal    @relation(fields: [CPF_Fiscal], references: [CPF], map: "Relatorio_CPF_Fiscal_fkey")
-  infracao         infracao  @relation(fields: [ID_Infracao], references: [id], map: "Relatorio_ID_Infracao_fkey")
-
-  @@index([CPF_Fiscal], map: "Relatorio_CPF_Fiscal_fkey")
-  @@index([Data_Emissao], map: "Relatorio_Data_Emissao_idx")
-  @@index([ID_Infracao], map: "Relatorio_ID_Infracao_fkey")
-}
-
 enum Equipe {
   charlie_sede_diurno
   charlie_rp_diurno
@@ -143,6 +126,7 @@ model relatoriodiario {
   descricao_veiculos                 String?
   km_percorrido                      Int
   horas                              Int
+  processado                         Boolean  @default(false)
   
   // Relação com autoinfracao (um relatório para muitos autos)
   autoinfracao                       autoinfracao[]
