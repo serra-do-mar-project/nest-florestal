@@ -1,54 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model fiscal {
+  CPF       String      @id @db.VarChar(14)
+  Nome      String      @db.VarChar(255)
+  Senha     String      @db.VarChar(255)
+  Tipo      Int
+  relatorio relatorio[]
 }
 
-model Fiscal {
-  CPF   String @id @db.VarChar(14)
-  Nome  String @db.VarChar(255)
-  Senha String @db.VarChar(255)
-  Tipo  Int
+model infracao {
+  id             Int         @id @default(autoincrement())
+  nome_resumo    String?     @db.VarChar(100)
+  nome_completo  String      @db.VarChar(255)
+  palavra_chave  String?     @db.VarChar(255)
+  categoria      String      @db.VarChar(100)
+  tags           String?     @db.VarChar(255)
+  proc_OP        String?     @db.Text
+  proc_ADM       String?     @db.Text
+  enquad_PEN     String?     @db.Text
+  enquad_ADM     String?     @db.Text
+  formulario     String?     @db.VarChar(255)
+  tipoOcorrencia String?     @db.VarChar(100)
+  campos         String?     @db.Text
+  relatorio      relatorio[]
 
-  Relatorios Relatorio[]
+  @@index([categoria], map: "Infracao_categoria_idx")
+  @@index([palavra_chave], map: "Infracao_palavra_chave_idx")
 }
 
-model Infracao {
-  id            Int      @id @default(autoincrement())
-  nome_resumo   String?  @db.VarChar(100)
-  nome_completo String   @db.VarChar(255)
-  palavra_chave String?  @db.VarChar(255)
-  categoria     String   @db.VarChar(100)
-  tags          String?  @db.VarChar(255)
-  proc_OP       String?  @db.Text
-  proc_ADM      String?  @db.Text
-  enquad_PEN    String?  @db.Text
-  enquad_ADM    String?  @db.Text
-  formulario    String?  @db.VarChar(255)
-  tipoOcorrencia String? @db.VarChar(100)
-  campos        String?  @db.Text
-
-  Relatorios Relatorio[]
-
-  @@index([categoria])
-  @@index([palavra_chave])
-}
-
-model Relatorio {
-  ID               Int      @id @default(autoincrement())
-  Data_Emissao     DateTime @db.Date
-  CPF_Fiscal       String   @db.VarChar(14)
+model relatorio {
+  ID               Int       @id @default(autoincrement())
+  Data_Emissao     DateTime  @db.Date
+  CPF_Fiscal       String    @db.VarChar(14)
   ID_Infracao      Int
-  Observacoes      String?  @db.Text
-  Local_Ocorrencia String?  @db.VarChar(255)
+  Observacoes      String?   @db.Text
+  Local_Ocorrencia String?   @db.VarChar(255)
   Data_Ocorrencia  DateTime?
-  Texto      String?  @db.Text
+  Texto            String?   @db.Text
+  fiscal           fiscal    @relation(fields: [CPF_Fiscal], references: [CPF], map: "Relatorio_CPF_Fiscal_fkey")
+  infracao         infracao  @relation(fields: [ID_Infracao], references: [id], map: "Relatorio_ID_Infracao_fkey")
 
-  Fiscal   Fiscal   @relation(fields: [CPF_Fiscal], references: [CPF], onDelete: Restrict, onUpdate: Cascade)
-  Infracao Infracao @relation(fields: [ID_Infracao], references: [id], onDelete: Restrict, onUpdate: Cascade)
-
-  @@index([Data_Emissao])
+  @@index([CPF_Fiscal], map: "Relatorio_CPF_Fiscal_fkey")
+  @@index([Data_Emissao], map: "Relatorio_Data_Emissao_idx")
+  @@index([ID_Infracao], map: "Relatorio_ID_Infracao_fkey")
 }
