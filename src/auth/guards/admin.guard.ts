@@ -2,11 +2,10 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  ForbiddenException
+  ForbiddenException,
 } from '@nestjs/common';
 import { IS_ADMIN_KEY } from '../decorators/is-admin.decorator';
 import { Reflector } from '@nestjs/core';
-import { IsSelf } from '../decorators/is-self.decorator';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
@@ -14,7 +13,7 @@ export class AdminGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // Verifica se o metadata @IsAdmin está presente
-   const isAdminRequired = this.reflector.getAllAndOverride<boolean>(
+    const isAdminRequired = this.reflector.getAllAndOverride<boolean>(
       IS_ADMIN_KEY,
       [context.getHandler(), context.getClass()],
     );
@@ -24,14 +23,13 @@ export class AdminGuard implements CanActivate {
       return true;
     }
 
-    
-
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-
-    if (user?.tipo !== "administrador") {
-      throw new ForbiddenException('Acesso permitido apenas para administradores.');
+    if (user?.tipo !== 'administrador') {
+      throw new ForbiddenException(
+        'Acesso permitido apenas para administradores.',
+      );
     }
 
     return true;

@@ -9,7 +9,6 @@ import {
   Put,
   Request,
   UseGuards,
-
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
@@ -23,11 +22,9 @@ import { AdminGuard } from './guards/admin.guard';
 import { LoginUserDto } from 'src/user/dto/login-user.dto';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
-
-
-@Controller()
+@Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @UseGuards(AdminGuard)
   @Post('signup')
@@ -36,8 +33,6 @@ export class AuthController {
     return this.authService.signup(user);
   }
 
-
-  
   @Post('signin')
   @IsPublic()
   @HttpCode(HttpStatus.OK)
@@ -55,7 +50,12 @@ export class AuthController {
   @Put('updatePassword')
   async resetPassword(@Body() req: updatePassword) {
     // Exemplo simplificado:
-    return this.authService.updatePassword(req.cpf, req.senhaAntiga, req.novaSenha, req.confirmaSenha);
+    return this.authService.updatePassword(
+      req.cpf,
+      req.senhaAntiga,
+      req.novaSenha,
+      req.confirmaSenha,
+    );
   }
 
   //fazer rota de reset restrita aos admins
@@ -64,7 +64,11 @@ export class AuthController {
   @IsAdmin()
   async updatePassword(@Body() req: updatePassword) {
     // Exemplo simplificado:
-    return this.authService.updateOwnPassword(req.novaSenha, req.confirmaSenha, req.cpf);
+    return this.authService.updateOwnPassword(
+      req.novaSenha,
+      req.confirmaSenha,
+      req.cpf,
+    );
   }
 
   //rota para reset de qualquer usário. Restrita a Admins
@@ -73,21 +77,19 @@ export class AuthController {
   @IsAdmin()
   async updateAnyPassword(@Body() req: updatePassword) {
     // Exemplo simplificado:
-    return this.authService.updateAnyPassword(req.senhaAdm, req.cpf, req.novaSenha);
+    return this.authService.updateAnyPassword(
+      req.senhaAdm,
+      req.cpf,
+      req.novaSenha,
+    );
   }
-  
 
-
-  @UseGuards()
-  @IsAdmin()              // marca essa rota como apenas para admins
+  @UseGuards(AdminGuard)
+  @IsAdmin() // marca essa rota como apenas para admins
   @Delete('delete')
   async deleteUser(@Body() req: DeleteRequest) {
     // Aqui você chama o service que faz a exclusão do usuário no banco
     // Exemplo simplificado:
     return await this.authService.deleteUserByCpf(req.cpf);
-
   }
-
-
-
 }

@@ -3,10 +3,10 @@ import { AutoInfracaoService } from './autoInfracao.service';
 
 @Controller('autoInfracao')
 export class AutoInfracaoController {
-    constructor(private autoInfracaoService: AutoInfracaoService) {}
+  constructor(private autoInfracaoService: AutoInfracaoService) {}
 
-    @Get('exemploCaso')
-    getExemploCaso() {
-        return this.autoInfracaoService.getInfracoes();
-    }
+  @Get('exemploCaso')
+  getExemploCaso() {
+    return this.autoInfracaoService.getInfracoes();
+  }
 }
