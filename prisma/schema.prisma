@@ -24,15 +24,20 @@ model autoinfracao {
 }
 
 model exemplocaso {
-  id            Int     @id @default(autoincrement())
-  palavrachave  String  @db.VarChar(191)
-  naturezadano  String  @db.VarChar(191)
-  proc_op       String  @db.VarChar(191)
-  proc_adm      String  @db.VarChar(191)
-  enq_pen       String  @db.VarChar(191)
-  enq_adm       String  @db.VarChar(191)
-  modelo        String  @db.VarChar(191)
-  autoinfracao  autoinfracao[]
+  id              Int            @id @default(autoincrement())
+  nome_resumo     String?        @db.VarChar(100)
+  nome_completo   String         @db.VarChar(255)
+  palavra_chave   String?        @db.VarChar(255)
+  categoria       String         @db.VarChar(100)
+  tipo_ocorrencia String?        @db.VarChar(100)
+  tags            String?        @db.VarChar(255)
+  proc_op         String         @db.VarChar(191)
+  proc_adm        String         @db.VarChar(191)
+  enq_pen         String         @db.VarChar(191)
+  enq_adm         String         @db.VarChar(191)
+  modelo          String         @db.Text
+  campos          String?        @db.Text
+  autoinfracao    autoinfracao[]
 }
 
 model fiscal {
@@ -47,9 +52,21 @@ model fiscal {
   relatoriodiario relatoriodiario[]
 }
 
-enum tipo_usuario {
-  fiscal
-  administrador
+model relatorio {
+  ID               Int       @id @default(autoincrement())
+  Data_Emissao     DateTime  @db.Date
+  CPF_Fiscal       String    @db.VarChar(14)
+  ID_Infracao      Int
+  Observacoes      String?   @db.Text
+  Local_Ocorrencia String?   @db.VarChar(255)
+  Data_Ocorrencia  DateTime?
+  Texto            String?   @db.Text
+  fiscal           fiscal    @relation(fields: [CPF_Fiscal], references: [CPF], map: "Relatorio_CPF_Fiscal_fkey")
+  infracao         infracao  @relation(fields: [ID_Infracao], references: [id], map: "Relatorio_ID_Infracao_fkey")
+
+  @@index([CPF_Fiscal], map: "Relatorio_CPF_Fiscal_fkey")
+  @@index([Data_Emissao], map: "Relatorio_Data_Emissao_idx")
+  @@index([ID_Infracao], map: "Relatorio_ID_Infracao_fkey")
 }
 
 enum Equipe {
