@@ -12,25 +12,33 @@ export class AutoInfracaoService {
   }
 
   async createRelatorio(body: CreateRelatorioDto, requisicao: any) {
+    console.log('requisicao:', requisicao);
 
+    //verificar se fiscal autenticado
     const fiscal = await this.prisma.fiscal.findUnique({
       where: { cpf: requisicao.cpf },
     });
 
+    //verificar se fiscal autenticado
     if (!fiscal) {
       throw new Error('Fiscal nao autenticado');
     }
 
-    const relatorio = await this.prisma.relatorio.create({
+    // remover autoinfracao do body
+    const { autoinfracao, ...rest } = body; 
+
+    // criar relatorio
+    const relatorio = await this.prisma.relatoriodiario.create({
       data: {
-        ...body,
+        ...rest,
+        horas: new Date().getHours(),
         fiscalId: fiscal.id,
       },
     });
 
-   if (body.autoinfracoes) {
+   if (autoinfracao) {
     await this.prisma.autoinfracao.createMany({
-      data: body.autoinfracoes.map((autoinfracao) => ({
+      data: autoinfracao.map((autoinfracao) => ({
         ...autoinfracao,
         relatoriodiarioId: relatorio.id,
       })),
@@ -41,3 +49,5 @@ export class AutoInfracaoService {
    
   }
 }
+
+

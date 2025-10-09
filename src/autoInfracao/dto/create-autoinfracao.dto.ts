@@ -1,8 +1,19 @@
+import { IsNumber, IsString } from "class-validator";
+
 export class CreateAutoInfracaoDto {
-    dataEmissao: string;
+
+    @IsString()
+    data_emissao: string;
+
+    @IsString()
     cpf: string;
-    idExemplocaso: number;
+
+    @IsNumber()
+    id_exemplocaso: number;
+
+    @IsString()
     descricao: string;
 
-    relatoriodiarioId?: number;
+    @IsNumber()
+    relatoriodiario_id?: number;
 }
